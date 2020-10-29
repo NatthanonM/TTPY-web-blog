@@ -1,11 +1,19 @@
 const express = require("express");
-const app = express();
-const port = 8088;
+const mongoose = require("./config/db");
+const config = require("./config/config");
+const cors = require("cors");
+const bodyParser = require("body-parser");
+const port = config.appPort;
+const user = require("./routes/user");
 
-app.get("/", (req, res) => {
-  res.send("Hello World!");
-});
+const app = express();
+
+app.use(cors());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+
+app.use("/user", user);
 
 app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`);
+  console.log(`Start server at http://localhost:${port}`);
 });

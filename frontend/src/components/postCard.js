@@ -184,7 +184,7 @@ function DeleteDialog(props) {
   };
 
   return (
-    <Dialog onClose={onClose} open={open} fullWidth>
+    <Dialog onClose={onClose} open={open} fullWidth maxWidth="xs">
       <Grid container item justify="center" style={{ padding: 16 }}>
         <Grid container item xs={12} justify="center" style={{ padding: 8 }}>
           <Typography variant="h5">Confirm delete</Typography>
@@ -316,10 +316,10 @@ function PostCard({ post, handleDeletePost }) {
             label="commentatorAvatar"
             style={{
               backgroundColor:
-                PALETTE_26[owner.slice(0, 1).toUpperCase().charCodeAt() - 65]
+                PALETTE_26["S".slice(0, 1).toUpperCase().charCodeAt() - 65]
                   .backgroundColor,
               color:
-                PALETTE_26[owner.slice(0, 1).toUpperCase().charCodeAt() - 65]
+                PALETTE_26["S".slice(0, 1).toUpperCase().charCodeAt() - 65]
                   .color,
             }}
           >

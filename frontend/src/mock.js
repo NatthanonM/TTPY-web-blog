@@ -1,6 +1,6 @@
 export const posts = [
   {
-    id: 1,
+    id: 3,
     owner: "Natthanon Manop",
     datetime: Date.now(),
     content:
@@ -14,7 +14,7 @@ export const posts = [
       "Computer security basically is the protection of computer systems and information from harm, theft, and unauthorized use. It is the process of preventing and detecting unauthorized use of your computer system.",
   },
   {
-    id: 3,
+    id: 1,
     owner: "Natthanon Manop",
     datetime: Date.now() - 1000 * 60 * 10,
     content:

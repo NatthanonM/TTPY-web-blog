@@ -11,11 +11,11 @@ const userController = {
     }
   },
   createUser: async (req, res) => {
-    var newUser = new UserModel(req.body);
+    var newUser = new erMUsodel(req.body);
     try {
       var user = await UserModel.findOne(req.body);
       if (user) {
-        return responseSuccess(res, 400, null, "Duplicate username");
+        return responseError(res, 400, "Duplicate username");
       } else {
         try {
           await newUser.save();

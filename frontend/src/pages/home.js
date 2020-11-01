@@ -23,6 +23,15 @@ function Home() {
     alert("logout");
   };
 
+  const handleEditPost = (id, newContent) => {
+    setPosts(
+      posts.map((post) => {
+        if (post.id === id) post.content = newContent;
+        return post;
+      })
+    );
+  };
+
   const handleDeletePost = (id) => {
     setPosts(posts.filter((post) => post.id !== id));
   };
@@ -34,10 +43,51 @@ function Home() {
         owner: "S",
         datetime: Date.now(),
         content: content,
+        comments: [],
       },
       ...posts,
     ]);
   };
+
+  const handleEditComment = (postId, commentId, newComment) => {
+    let newPosts = [...posts];
+    for (let i = 0; i < newPosts.length; i++) {
+      if (newPosts[i]["id"] === postId) {
+        for (let j = 0; j < newPosts[i]["comments"].length; j++) {
+          if (newPosts[i]["comments"][j].id === commentId) {
+            newPosts[i]["comments"][j].content = newComment;
+            setPosts(newPosts);
+            return;
+          }
+        }
+      }
+    }
+  };
+
+  const handleDeleteComment = (postId, commentId) => {
+    let newPosts = posts;
+    console.log(posts);
+    for (let i = 0; i < newPosts.length; i++) {
+      if (newPosts[i]["id"] === postId) {
+        newPosts[i]["comments"] = newPosts[i]["comments"].filter(
+          (comment) => comment.id === commentId
+        );
+        setPosts(newPosts);
+        console.log(newPosts);
+        return;
+      }
+    }
+  };
+
+  // oldPosts[i].comments = [
+  //   {
+  //     id: oldPosts[i].comments.length + 1,
+  //     owner: "S",
+  //     datetime: Date.now(),
+  //     content: newComment,
+  //   },
+  //   oldPosts[i].comments,
+  // ];
 
   return (
     <div className={classes.root}>
@@ -54,7 +104,10 @@ function Home() {
             <PostCard
               key={post.id}
               post={post}
+              handleEditPost={handleEditPost}
               handleDeletePost={handleDeletePost}
+              handleEditComment={handleEditComment}
+              handleDeleteComment={handleDeleteComment}
             />
           );
         })}

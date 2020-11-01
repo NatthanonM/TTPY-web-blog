@@ -16,7 +16,10 @@ import {
   Typography,
 } from "@material-ui/core";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
-import SendIcon from "@material-ui/icons/Send";
+import CloseIcon from "@material-ui/icons/Close";
+
+import formatter from "../utils/formatter";
+import CommentSection from "./commentSection";
 
 const PALETTE_26 = [
   { color: "#FFFFFF", backgroundColor: "black" },
@@ -91,44 +94,20 @@ const useStyles = makeStyles({
   card: {
     width: "80vw",
   },
+  padding: {
+    paddingTop: 8,
+    paddingBottom: 8,
+    paddingLeft: 16,
+    paddingRight: 16,
+  },
 });
 
-function formatDatetime(timestamp) {
-  const datetime = new Date(timestamp);
-  const datevalues = [
-    datetime.getFullYear(),
-    datetime.getMonth() + 1,
-    datetime.getDate(),
-    datetime.getHours() < 10 ? "0" + datetime.getHours() : datetime.getHours(),
-    datetime.getMinutes() < 10
-      ? "0" + datetime.getMinutes()
-      : datetime.getMinutes(),
-  ];
-  const monthNames = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
-  return `${monthNames[[datevalues[1]]]} ${datevalues[0]}, ${datevalues[2]} ${
-    datevalues[3]
-  }:${datevalues[4]}`;
-}
-
 function EditDialog(props) {
-  const { onClose, open, postContent, setPostContent } = props;
-  const [value, setValue] = useState(postContent);
+  const { onClose, open, content, handleEdit } = props;
+  const [value, setValue] = useState(content);
 
   useEffect(() => {
-    setValue(postContent);
+    setValue(content);
   }, [open]);
 
   const handleChange = (event) => {
@@ -136,7 +115,7 @@ function EditDialog(props) {
   };
 
   const handleSave = () => {
-    setPostContent(value);
+    handleEdit(value);
     onClose();
   };
 
@@ -149,9 +128,22 @@ function EditDialog(props) {
         justify="center"
         style={{ padding: 16 }}
       >
-        <Grid container item xs={12} justify="center" style={{ padding: 8 }}>
-          <Typography variant="h5">Edit post</Typography>
-        </Grid>
+        <CardHeader
+          action={
+            <div>
+              <IconButton label="settings" onClick={onClose}>
+                <CloseIcon />
+              </IconButton>
+            </div>
+          }
+          title={<Typography variant="h5">Edit post</Typography>}
+          style={{
+            paddingTop: 0,
+            paddingBottom: 0,
+            paddingLeft: 8,
+            paddingRight: 8,
+          }}
+        />
         <Grid container item xs={12} justify="center" style={{ padding: 8 }}>
           <CssTextField
             placeholder="Write comment..."
@@ -184,7 +176,7 @@ function DeleteDialog(props) {
   };
 
   return (
-    <Dialog onClose={onClose} open={open} fullWidth maxWidth="xs">
+    <Dialog onClose={onClose} open={open} fullWidth maxWidth="sm">
       <Grid container item justify="center" style={{ padding: 16 }}>
         <Grid container item xs={12} justify="center" style={{ padding: 8 }}>
           <Typography variant="h5">Confirm delete</Typography>
@@ -207,12 +199,19 @@ function DeleteDialog(props) {
   );
 }
 
-function PostCard({ post, handleDeletePost }) {
+function PostCard({
+  post,
+  handleEditPost,
+  handleDeletePost,
+  handleEditComment,
+  handleDeleteComment,
+}) {
   const classes = useStyles();
 
-  const { id, owner, datetime, content } = post;
+  const { id, owner, datetime, content, comments } = post;
 
-  const [postContent, setPostContent] = useState(content);
+  // const [postContent, setPostContent] = useState(post.content);
+  // const [comments] = useState(post.comments);
   const [editing, setEditting] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
@@ -242,6 +241,9 @@ function PostCard({ post, handleDeletePost }) {
     setDeleting(false);
   };
 
+  const handleEdit = (content) => {
+    handleEditPost(id, content);
+  };
   const handleDelete = () => {
     handleDeletePost(id);
   };
@@ -254,8 +256,8 @@ function PostCard({ post, handleDeletePost }) {
       <EditDialog
         onClose={handleEditClose}
         open={editing}
-        postContent={postContent}
-        setPostContent={setPostContent}
+        content={content}
+        handleEdit={handleEdit}
       />
       <DeleteDialog
         onClose={handleDeleteClose}
@@ -264,6 +266,7 @@ function PostCard({ post, handleDeletePost }) {
       />
       <Card className={classes.card}>
         <CardHeader
+          className={classes.padding}
           avatar={
             <Avatar
               label="ownerAvatar"
@@ -304,40 +307,19 @@ function PostCard({ post, handleDeletePost }) {
             </div>
           }
           title={owner}
-          subheader={formatDatetime(datetime)}
+          subheader={formatter.formatDatetime(datetime)}
         />
-        <CardContent>
+        <CardContent className={classes.padding}>
           <Typography variant="body2" component="p">
-            {postContent}
+            {content}
           </Typography>
         </CardContent>
-        <CardActions style={{ padding: 16 }}>
-          <Avatar
-            label="commentatorAvatar"
-            style={{
-              backgroundColor:
-                PALETTE_26["S".slice(0, 1).toUpperCase().charCodeAt() - 65]
-                  .backgroundColor,
-              color:
-                PALETTE_26["S".slice(0, 1).toUpperCase().charCodeAt() - 65]
-                  .color,
-            }}
-          >
-            S
-          </Avatar>
-          <CssTextField
-            placeholder="Write comment..."
-            size="small"
-            variant="outlined"
-            style={{
-              color: "black",
-              width: "100%",
-            }}
-          />
-          <IconButton label="sendComment">
-            <SendIcon style={{ color: "#1877F2" }} />
-          </IconButton>
-        </CardActions>
+        <CommentSection
+          postId={id}
+          comments={comments}
+          handleEditComment={handleEditComment}
+          handleDeleteComment={handleDeleteComment}
+        />
       </Card>
     </Grid>
   );

@@ -5,13 +5,13 @@ const{ responseError, responseSuccess} = require("../utils/response");
 
 const postController = {
     uploadPost: async(req, res) => {
+        var post = new PostModel(req.body);
         try{
             var user = await UserModel.findOne(req.body.username);
             if(user){
                 try{
-                    const post = new PostModel(req.body);
-                    [err, post] = await toString(post.save());
-                    return responseSuccess(res,200,post);
+                    await post.save();
+                    return responseSuccess(res, 201, null, "Post is created");
                 }catch(err){
                     throw err;
                 }
@@ -19,23 +19,26 @@ const postController = {
                 return responseError(res, 400, "User is not existed");
             }
         }catch(error){
-            throw error;
+            return responseError(res, 500,"Internal Server");
         }
-    }
-    // getAllUserPost: async (req, res) => {
-    //     const username = req.user.name;
-    //     const content = req.user.content;
-    //     try{
-    //         var user = await UserModel.findOne(req.body);
-    //         if(user){
-    //             try{
-    //                 const post = new CommentModel({username,content});
-    //             }
-    //         }else{
-    //             return responseError(res, 400, "User is not existed");
-    //         }
-    //     }catch(err){
-    //         throw err;
-    //     }
-    // }
-}
+    },
+    getAllUserPost: async (req, res) => {
+        const username = req.user.name;
+        try{
+            var user = await UserModel.findOne(req.body);
+            if(user){
+                try{
+                    var posts = await PostModel.find({userId: req.body.username});
+                    return responseSuccess(res, 200, posts);
+                }catch(err){
+                    throw err;
+                }
+            }else{
+                return responseError(res, 400, "User is not existed");
+            }
+        }catch(error){
+            return responseError(res, 500,"Internal Server");
+        }
+    },
+};
+module.exports = postController;

@@ -3,14 +3,15 @@ var collectionName = "post";
 
 const postSchema = mongoose.Schema(
   {
-    userId: {
-      type: String,
-      required: true,
+    owner: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'UserModel',
     },
     content: {
       type: String,
       default: "",
-    }
+    },
+    datetime: { createdAt: 'created_at' }
   },
   {
     collection: collectionName,

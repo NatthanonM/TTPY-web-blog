@@ -3,23 +3,24 @@ var collectionName = "comment";
 
 const commentSchema = mongoose.Schema(
     {
-        userId:{
-            type: String,
-            required: true
+        owner:{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'UserModel'
         },
         postId:{
-            type: String,
-            required: true
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'PostModel'
         },
         content:{
             type: String,
             default: ""
-        }
+        },
+        datetime: { createdAt: 'created_at' }
     },  
         {
             collection: collectionName,
             versionKey: false
-        }
+        },
 );
 
 const CommentModel = mongoose.model("CommentModel", commentSchema);

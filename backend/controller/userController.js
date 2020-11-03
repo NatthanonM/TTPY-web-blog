@@ -11,7 +11,7 @@ const userController = {
     }
   },
   createUser: async (req, res) => {
-    var newUser = new erMUsodel(req.body);
+    var newUser = new UserModel(req.body);
     try {
       var user = await UserModel.findOne(req.body);
       if (user) {

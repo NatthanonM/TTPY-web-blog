@@ -5,6 +5,7 @@ import PostCard from "../components/postCard";
 import NewPostCard from "../components/newPostCard";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import { posts as oriPosts } from "../mock";
+import history from "../History";
 
 const backgroundColor = "#F0F2F5";
 
@@ -20,7 +21,8 @@ function Home() {
   const [posts, setPosts] = useState(oriPosts);
 
   const handleLogout = () => {
-    alert("logout");
+    history.push('/login');
+    window.location.reload();
   };
 
   const handleEditPost = (id, newContent) => {

@@ -173,9 +173,9 @@ function CommentCard({
 
   const [anchorEl, setAnchorEl] = useState(null);
 
-  useEffect(() => {
-    setCommentContent(content);
-  }, [editing]);
+  // useEffect(() => {
+  //   setCommentContent(content);
+  // }, [editing]);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);

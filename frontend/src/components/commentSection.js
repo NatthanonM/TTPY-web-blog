@@ -91,18 +91,52 @@ const useStyles = makeStyles({
   },
 });
 
+let comment_id = 5;
+
 function CommentSection({
   postId,
   comments,
+  handleNewComment,
   handleEditComment,
   handleDeleteComment,
 }) {
   const classes = useStyles();
 
   const [postComments, setPostComments] = useState(comments);
+  const [newComment, setNewComment] = useState("");
+  const [error, setError] = useState(false);
 
   const handleDelete = (id) => {
     setPostComments(postComments.filter((comment) => comment.id !== id));
+  };
+
+  const handleNewCommentChange = (event) => {
+    setNewComment(event.target.value);
+    setError(false);
+  };
+
+  const onClick = () => {
+    setError(false);
+  };
+
+  const handleSendCommment = () => {
+    if (!newComment.length) {
+      setError(true);
+    } else {
+      setPostComments([
+        {
+          id: comment_id,
+          owner: "Suchut Sapsathien",
+          datetime: Date.now(),
+          content: newComment,
+        },
+        ...postComments,
+      ]);
+      comment_id = comment_id + 1;
+      handleNewComment(postId, newComment);
+      setError(false);
+      setNewComment("");
+    }
   };
 
   return (
@@ -128,8 +162,12 @@ function CommentSection({
             color: "black",
             width: "100%",
           }}
+          value={newComment}
+          onChange={handleNewCommentChange}
+          onClick={onClick}
+          error={error}
         />
-        <IconButton label="sendComment">
+        <IconButton label="sendComment" onClick={handleSendCommment}>
           <SendIcon style={{ color: "#1877F2" }} />
         </IconButton>
       </CardActions>

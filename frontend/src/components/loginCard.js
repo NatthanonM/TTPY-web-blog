@@ -6,11 +6,9 @@ import {
   Card,
   CardActions,
   Grid,
-  IconButton,
   TextField,
 } from "@material-ui/core";
-import SendIcon from "@material-ui/icons/Send";
-import history from "../History";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles({
   card: {
@@ -18,18 +16,17 @@ const useStyles = makeStyles({
   },
 });
 
+const user = "user";
+const pass = "pas";
+
 function LoginCard() {
+  const history = useHistory();
+
   const classes = useStyles();
 
-  const [content, setContent] = useState("");
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState(user);
+  const [password, setPassword] = useState(pass);
   const [error, setError] = useState(false);
-
-  const onChange = (event) => {
-    setContent(event.target.value);
-    setError(false);
-  };
 
   const onClick = () => {
     setError(false);
@@ -45,20 +42,15 @@ function LoginCard() {
     setError(false);
   };
 
-  const user = "user";
-  const pass = "pas";
-
   const login = () => {
     if (username === user && password === pass) {
       history.push(`/`);
-      window.location.reload();
-    }
-    else {
-        setError(true);
+    } else {
+      setError(true);
     }
   };
 
-  const handleKeypress = e => {
+  const handleKeypress = (e) => {
     if (e.keyCode === 13) {
       login();
     }

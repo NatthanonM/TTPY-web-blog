@@ -5,7 +5,7 @@ import PostCard from "../components/postCard";
 import NewPostCard from "../components/newPostCard";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import { posts as oriPosts } from "../mock";
-import history from "../History";
+import { useHistory } from "react-router-dom";
 
 const backgroundColor = "#F0F2F5";
 
@@ -16,13 +16,15 @@ const useStyles = makeStyles({
   },
 });
 
+let comment_id = 5;
+
 function Home() {
+  const history = useHistory();
   const classes = useStyles();
   const [posts, setPosts] = useState(oriPosts);
 
   const handleLogout = () => {
-    history.push('/login');
-    window.location.reload();
+    history.push("/login");
   };
 
   const handleEditPost = (id, newContent) => {
@@ -49,6 +51,26 @@ function Home() {
       },
       ...posts,
     ]);
+  };
+
+  const handleNewComment = (postId, comment) => {
+    setPosts(
+      posts.map((post) => {
+        if (post.id === postId) {
+          post.comments = [
+            {
+              id: comment_id,
+              owner: "Suchut Sapsathien",
+              datetime: Date.now(),
+              content: comment,
+            },
+            ...post.comments,
+          ];
+        }
+        return post;
+      })
+    );
+    comment_id = comment_id + 1;
   };
 
   const handleEditComment = (postId, commentId, newComment) => {
@@ -108,6 +130,7 @@ function Home() {
               post={post}
               handleEditPost={handleEditPost}
               handleDeletePost={handleDeletePost}
+              handleNewComment={handleNewComment}
               handleEditComment={handleEditComment}
               handleDeleteComment={handleDeleteComment}
             />

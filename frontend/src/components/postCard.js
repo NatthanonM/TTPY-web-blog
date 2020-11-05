@@ -203,6 +203,7 @@ function PostCard({
   post,
   handleEditPost,
   handleDeletePost,
+  handleNewComment,
   handleEditComment,
   handleDeleteComment,
 }) {
@@ -317,6 +318,7 @@ function PostCard({
         <CommentSection
           postId={id}
           comments={comments}
+          handleNewComment={handleNewComment}
           handleEditComment={handleEditComment}
           handleDeleteComment={handleDeleteComment}
         />

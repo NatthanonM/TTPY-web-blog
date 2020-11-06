@@ -6,13 +6,16 @@ const config = require("../config/config");
 
 const authController = {
   register: async (req, res, next) => {
-    const { username, password, firstName, lastName } = req.body;
-    if (!username || !password || !firstName || !lastName) {
+    const { username, password, role, firstName, lastName } = req.body;
+    if (!username || !password || !role || !firstName || !lastName) {
       return responseError(
         res,
         400,
-        "Please provide username, password, first name and last name"
+        "Please provide username, password, role, first name and last name"
       );
+    }
+    if (role !== "moderator" && role !== "user") {
+      return responseError(res, 400, "Undefined role");
     }
 
     try {
@@ -26,6 +29,7 @@ const authController = {
       var newUser = new UserModel({
         username,
         password: hashedPassword,
+        role,
         firstName,
         lastName,
       });
@@ -54,12 +58,20 @@ const authController = {
         return responseError(res, 400, "Username or password is incorrect");
       }
       const token = jwt.sign(
-        { username: loggingInUser.username },
+        {
+          userId: loggingInUser._id,
+          role: loggingInUser.role,
+          firstName: loggingInUser.firstName,
+          lastName: loggingInUser.lastName,
+        },
         config.jwtSecret,
         {
           expiresIn: config.jwtExpiresIn,
         }
       );
+      // let decoded = jwt.verify(token, config.jwtSecret);
+      // console.log(token);
+      // console.log(decoded);
       const cookieOptions = {
         expires: new Date(
           Date.now() + config.jwtCookieExpires * 24 * 60 * 60 * 1000

@@ -3,17 +3,17 @@ var collectionName = "post";
 
 const postSchema = mongoose.Schema(
   {
-    owner: {
+    userId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'UserModel',
+      ref: "UserModel",
     },
     content: {
       type: String,
       default: "",
     },
-    datetime: { createdAt: 'created_at' }
   },
   {
+    timestamps: { createdAt: "created_at", updatedAt: "updated_at" },
     collection: collectionName,
     versionKey: false,
   }

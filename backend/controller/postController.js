@@ -1,24 +1,19 @@
 const PostModel = require("../model/post");
 const UserModel = require("../model/user");
 const { responseError, responseSuccess } = require("../utils/response");
+const { isModerator } = require("./userController");
 
 const postController = {
   uploadPost: async (req, res) => {
-    //need user authorization
-    var post = new PostModel(req.body);
+    const { content } = req.body;
+    const { userId } = req.user;
+    var post = new PostModel({
+      content,
+      userId,
+    });
     try {
-      var user = await UserModel.findById(req.body.userId);
-      if (user) {
-        try {
-          await post.save();
-          return responseSuccess(res, 201, null, "Post is created");
-        } catch (err) {
-          console.log(err);
-          throw err;
-        }
-      } else {
-        return responseError(res, 400, "User is not existed");
-      }
+      await post.save();
+      return responseSuccess(res, 201, null, "Post is created");
     } catch (error) {
       console.log(error);
       return responseError(res, 500, "Internal Server");
@@ -26,27 +21,41 @@ const postController = {
   },
   deletePost: async (req, res) => {
     //need user authorization
+    const { userId } = req.user;
+    const moderator = await isModerator(userId);
     const postId = req.params.postId;
-    try {
-      var post = await PostModel.findByIdAndDelete(postId);
-      if (!post) {
-        return responseError(res, 400, "Post is not existed");
+    if (moderator) {
+      try {
+        var post = await PostModel.findByIdAndDelete(postId);
+        if (!post) {
+          return responseError(res, 400, "Post is not existed");
+        }
+        return responseSuccess(res, 200, "Post is deleted");
+      } catch (error) {
+        return responseError(res, 500, "Internal Server");
       }
-      return responseSuccess(res, 200, "Post is deleted");
-    } catch (error) {
-      return responseError(res, 500, "Internal Server");
+    } else {
+      return responseError(res, 403, "Forbidden");
     }
   },
   editPost: async (req, res) => {
     //need user authorization
+    const { userId } = req.user;
+    const moderator = await isModerator(userId);
     const postId = req.params.postId;
     const { content } = req.body;
     try {
-      var post = await PostModel.findByIdAndUpdate(postId, { content });
-      if (!post) {
+      var post = await PostModel.findById(postId);
+      if (post) {
+        if (moderator || post.userId.toString() === userId) {
+          await PostModel.findByIdAndUpdate(postId, { content });
+          return responseSuccess(res, 200, "Post is updated");
+        } else {
+          return responseError(res, 403, "Forbidden");
+        }
+      } else {
         return responseError(res, 400, "Post is not existed");
       }
-      return responseSuccess(res, 200, "Post is updated");
     } catch (error) {
       return responseError(res, 500, "Internal Server");
     }

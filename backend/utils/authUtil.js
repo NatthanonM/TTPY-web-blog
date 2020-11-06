@@ -15,7 +15,7 @@ const authMiddleware = (req, res, next) => {
   try {
     var decoded = jwtDecode(req.headers.authorization);
     req.user = {};
-    req.user.username = decoded.username;
+    req.user.userId = decoded.userId;
     next();
   } catch (error) {
     responseError(res, 401, error.message);

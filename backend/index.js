@@ -16,9 +16,9 @@ app.use(bodyParser.json());
 const { authMiddleware } = require("./utils/authUtil");
 
 app.use("/auth", auth);
-app.use("/user", user);
-app.use("/post", post);
-app.use("/comment", comment);
+app.use("/user", authMiddleware, user);
+app.use("/post", authMiddleware, post);
+app.use("/comment", authMiddleware, comment);
 
 app.listen(port, () => {
   console.log(`Start server at http://localhost:${port}`);

@@ -6,12 +6,12 @@ const config = require("../config/config");
 
 const authController = {
   register: async (req, res, next) => {
-    const { username, password, role, firstName, lastName } = req.body;
-    if (!username || !password || !role || !firstName || !lastName) {
+    const { username, password, role } = req.body;
+    if (!username || !password || !role) {
       return responseError(
         res,
         400,
-        "Please provide username, password, role, first name and last name"
+        "Please provide username, password and role"
       );
     }
     if (role !== "moderator" && role !== "user") {
@@ -30,8 +30,6 @@ const authController = {
         username,
         password: hashedPassword,
         role,
-        firstName,
-        lastName,
       });
       try {
         await newUser.save();
@@ -60,9 +58,8 @@ const authController = {
       const token = jwt.sign(
         {
           userId: loggingInUser._id,
+          username: loggingInUser.username,
           role: loggingInUser.role,
-          firstName: loggingInUser.firstName,
-          lastName: loggingInUser.lastName,
         },
         config.jwtSecret,
         {

@@ -1,6 +1,9 @@
+const CommentModel = require("../model/comment");
 const PostModel = require("../model/post");
 const UserModel = require("../model/user");
+const { post } = require("../routes/user");
 const { responseError, responseSuccess } = require("../utils/response");
+const commentController = require("./commentController");
 const { isModerator } = require("./userController");
 
 const postController = {
@@ -60,23 +63,46 @@ const postController = {
       return responseError(res, 500, "Internal Server");
     }
   },
-  getAllUserPost: async (req, res) => {
-    const username = req.user.name;
+  getAllPosts: async (req, res) => {
+    var allPosts = [];
     try {
-      var user = await UserModel.findOne(req.body);
-      if (user) {
+      var posts = await PostModel.find();
+      for (i = 0; i < posts.length; i++) {
         try {
-          var posts = await PostModel.find({ userId: req.body.username });
-          return responseSuccess(res, 200, posts);
-        } catch (err) {
-          throw err;
+          var user = await UserModel.findById(posts[i].userId);
+          var comments = await CommentModel.find({ postId: posts[i]._id });
+          convComment = [];
+          if (comments.length > 0) {
+            for (j = 0; j < comments.length; j++) {
+              try {
+                var commentOwner = await UserModel.findById(comments[j].userId);
+                await convComment.push({
+                  username: commentOwner.username,
+                  content: comments[j].content,
+                  created_at: comments[j].created_at,
+                  updated_at: comments[j].updated_at,
+                });
+              } catch (error) {
+                throw error;
+              }
+            }
+          }
+        } catch (error) {
+          throw error;
         }
-      } else {
-        return responseError(res, 400, "User is not existed");
+        var p = {
+          username: user.username,
+          content: posts[i].content,
+          created_at: posts[i].created_at,
+          updated_at: posts[i].updated_at,
+          comment: convComment,
+        };
+        allPosts.push(p);
       }
     } catch (error) {
       return responseError(res, 500, "Internal Server");
     }
+    return responseSuccess(res, 200, allPosts);
   },
 };
 module.exports = postController;

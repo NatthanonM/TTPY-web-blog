@@ -7,10 +7,37 @@ const API = {
       method: "POST",
       mode: "cors",
       cache: "no-cache",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ username, password }),
+    });
+    return response.json();
+  },
+  logout: async () => {
+    const URL = `${config.BACKEND_URI}/auth/logout`;
+    const response = await fetch(URL, {
+      method: "POST",
+      mode: "cors",
+      cache: "no-cache",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return response.json();
+  },
+  isLogin: async () => {
+    const URL = `${config.BACKEND_URI}/auth/isLogin`;
+    const response = await fetch(URL, {
+      method: "GET",
+      mode: "cors",
+      cache: "no-cache",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
     });
     return response.json();
   },
@@ -19,8 +46,10 @@ const API = {
     const response = await fetch(URL, {
       method: "GET",
       mode: "cors",
+      credentials: "include",
       headers: {
-        Authorization: localStorage.getItem("token"),
+        // Authorization: localStorage.getItem("token"),
+        "Content-Type": "application/json",
       },
     });
     return response.json();

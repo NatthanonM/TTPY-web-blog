@@ -78,7 +78,23 @@ const authController = {
       res.cookie("jwt", token, cookieOptions);
       return responseSuccess(res, 201, { token });
     } catch (err) {
-      console.log(err);
+      // console.log(err);
+      return responseError(res, 500, "Internal Error");
+    }
+  },
+  logout: async (req, res, next) => {
+    try {
+      res.clearCookie("jwt");
+      return responseSuccess(res, 200, {});
+    } catch (err) {
+      return responseError(res, 500, "Internal Error");
+    }
+  },
+  isLogin: async (req, res, next) => {
+    try {
+      if (req.cookies.jwt) return responseSuccess(res, 200, {});
+      else return responseError(res, 401, "Unauthorized");
+    } catch (err) {
       return responseError(res, 500, "Internal Error");
     }
   },

@@ -17,6 +17,7 @@ import {
 } from "@material-ui/core";
 import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import formatter from "../utils/formatter";
+import API from "../utils/api";
 
 const PALETTE_26 = [
   { color: "#FFFFFF", backgroundColor: "black" },
@@ -145,16 +146,15 @@ function DeleteDialog(props) {
   );
 }
 
-function CommentCard({
-  postId,
-  comment,
-  handleDelete,
-  handleEditComment,
-  handleDeleteComment,
-}) {
+function CommentCard({ postId, comment, handleDelete, handleDeleteComment }) {
   const classes = useStyles();
 
-  const { id, owner, datetime, content } = comment;
+  const {
+    commentId: id,
+    username: owner,
+    created_at: datetime,
+    content,
+  } = comment;
 
   const [commentContent, setCommentContent] = useState(content);
   const [error, setError] = useState(false);
@@ -202,11 +202,32 @@ function CommentCard({
     setDeleting(false);
   };
 
+  const handleEditComment = async (id, commentContent) => {
+    const res = await API.editComment(id, commentContent);
+    switch (res.statusCode) {
+      case 200:
+        window.location.reload();
+        break;
+      case 400:
+        alert(res.message);
+        break;
+      case 403:
+        alert(res.message);
+        break;
+      case 500:
+        alert(res.message);
+        break;
+      default:
+        alert("Something went wrong");
+        break;
+    }
+  };
+
   const handleSave = () => {
     if (!commentContent.length) {
       setError(true);
     } else {
-      handleEditComment(postId, id, commentContent);
+      handleEditComment(id, commentContent);
       setEditting(false);
     }
   };

@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { Fab, Grid } from "@material-ui/core";
+import { Fab, Grid, Typography } from "@material-ui/core";
 import PostCard from "../components/postCard";
 import NewPostCard from "../components/newPostCard";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import { posts as oriPosts } from "../mock";
 import { useHistory } from "react-router-dom";
+import API from "../utils/api";
 
 const backgroundColor = "#F0F2F5";
 
@@ -21,9 +22,30 @@ let comment_id = 5;
 function Home() {
   const history = useHistory();
   const classes = useStyles();
-  const [posts, setPosts] = useState(oriPosts);
+  const [posts, setPosts] = useState([]);
+  const [getAllPostError, setGetAllPostError] = useState(false);
+
+  const getAllPost = async () => {
+    const res = await API.getAllPost();
+
+    switch (res.statusCode) {
+      case 200:
+        console.log(res.data);
+        setPosts(res.data);
+        break;
+      case 500:
+        setGetAllPostError(true);
+        console.log(res.message);
+        break;
+    }
+  };
+
+  useEffect(() => {
+    getAllPost();
+  }, []);
 
   const handleLogout = () => {
+    localStorage.removeItem("token");
     history.push("/login");
   };
 
@@ -103,16 +125,6 @@ function Home() {
     }
   };
 
-  // oldPosts[i].comments = [
-  //   {
-  //     id: oldPosts[i].comments.length + 1,
-  //     owner: "S",
-  //     datetime: Date.now(),
-  //     content: newComment,
-  //   },
-  //   oldPosts[i].comments,
-  // ];
-
   return (
     <div className={classes.root}>
       <Grid
@@ -123,19 +135,23 @@ function Home() {
         style={{ padding: 24 }}
       >
         <NewPostCard handleNewPost={handleNewPost} />
-        {posts.map((post) => {
-          return (
-            <PostCard
-              key={post.id}
-              post={post}
-              handleEditPost={handleEditPost}
-              handleDeletePost={handleDeletePost}
-              handleNewComment={handleNewComment}
-              handleEditComment={handleEditComment}
-              handleDeleteComment={handleDeleteComment}
-            />
-          );
-        })}
+        {getAllPostError ? (
+          <Typography>Something went wrong</Typography>
+        ) : (
+          posts.map((post) => {
+            return (
+              <PostCard
+                key={post.id}
+                post={post}
+                handleEditPost={handleEditPost}
+                handleDeletePost={handleDeletePost}
+                handleNewComment={handleNewComment}
+                handleEditComment={handleEditComment}
+                handleDeleteComment={handleDeleteComment}
+              />
+            );
+          })
+        )}
         <Fab
           color="primary"
           style={{

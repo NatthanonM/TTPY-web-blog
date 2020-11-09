@@ -18,6 +18,7 @@ import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import SendIcon from "@material-ui/icons/Send";
 import formatter from "../utils/formatter";
 import CommentCard from "./commentCard";
+import API from "../utils/api";
 
 const PALETTE_26 = [
   { color: "#FFFFFF", backgroundColor: "black" },
@@ -96,7 +97,6 @@ let comment_id = 5;
 function CommentSection({
   postId,
   comments,
-  handleNewComment,
   handleEditComment,
   handleDeleteComment,
 }) {
@@ -119,23 +119,44 @@ function CommentSection({
     setError(false);
   };
 
+  const handleNewComment = async (postId, newComment) => {
+    const res = await API.uploadComment(postId, newComment);
+    switch (res.statusCode) {
+      case 201:
+        window.location.reload();
+        break;
+      case 400:
+        alert(res.message);
+        break;
+      case 403:
+        alert(res.message);
+        break;
+      case 500:
+        alert(res.message);
+        break;
+      default:
+        alert("Something went wrong");
+        break;
+    }
+  };
+
   const handleSendCommment = () => {
     if (!newComment.length) {
       setError(true);
     } else {
-      setPostComments([
-        {
-          id: comment_id,
-          owner: "Suchut Sapsathien",
-          datetime: Date.now(),
-          content: newComment,
-        },
-        ...postComments,
-      ]);
-      comment_id = comment_id + 1;
+      // setPostComments([
+      //   {
+      //     id: comment_id,
+      //     owner: "Suchut Sapsathien",
+      //     datetime: Date.now(),
+      //     content: newComment,
+      //   },
+      //   ...postComments,
+      // ]);
+      // comment_id = comment_id + 1;
       handleNewComment(postId, newComment);
       setError(false);
-      setNewComment("");
+      // setNewComment("");
     }
   };
 

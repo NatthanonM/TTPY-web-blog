@@ -10,6 +10,8 @@ import {
   TextField,
 } from "@material-ui/core";
 import SendIcon from "@material-ui/icons/Send";
+import { useHistory } from "react-router-dom";
+import API from "../utils/api";
 
 const PALETTE_26 = [
   { color: "#FFFFFF", backgroundColor: "black" },
@@ -66,7 +68,8 @@ const useStyles = makeStyles({
   },
 });
 
-function NewPostCard({ handleNewPost }) {
+function NewPostCard() {
+  const history = useHistory();
   const classes = useStyles();
 
   const [content, setContent] = useState("");
@@ -81,12 +84,31 @@ function NewPostCard({ handleNewPost }) {
     setError(false);
   };
 
+  const handleNewPost = async (content) => {
+    const res = await API.uploadPost(content);
+    switch (res.statusCode) {
+      case 201:
+        window.location.reload();
+        break;
+      case 403:
+        alert(res.message);
+        break;
+      case 500:
+        alert(res.message);
+        break;
+      default:
+        alert("Something went wrong");
+        break;
+    }
+  };
+
   const handleSend = () => {
     if (!content.length) {
       return setError(true);
     }
+    console.log(content);
     handleNewPost(content);
-    setContent("");
+    // setContent("");
   };
 
   return (

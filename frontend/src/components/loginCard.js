@@ -9,6 +9,7 @@ import {
   TextField,
 } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
+import API from "../utils/api";
 
 const useStyles = makeStyles({
   card: {
@@ -42,10 +43,15 @@ function LoginCard() {
     setError(false);
   };
 
-  const login = () => {
-    if (username === user && password === pass) {
+  const login = async () => {
+    const res = await API.login(username, password);
+
+    if (res.status === "success") {
+      console.log(res.data);
+      localStorage.setItem("token", res.data.token);
       history.push(`/`);
     } else {
+      console.log(res.message);
       setError(true);
     }
   };

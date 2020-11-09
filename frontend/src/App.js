@@ -11,7 +11,7 @@ import history from "./History";
 
 const isValidToken = () => {
   const token = localStorage.getItem("token");
-  return true;
+  return !!token;
 };
 
 function Auth({ children }) {

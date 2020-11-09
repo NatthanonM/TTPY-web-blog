@@ -20,6 +20,7 @@ import CloseIcon from "@material-ui/icons/Close";
 
 import formatter from "../utils/formatter";
 import CommentSection from "./commentSection";
+import API from "../utils/api";
 
 const PALETTE_26 = [
   { color: "#FFFFFF", backgroundColor: "black" },
@@ -201,15 +202,19 @@ function DeleteDialog(props) {
 
 function PostCard({
   post,
-  handleEditPost,
-  handleDeletePost,
   handleNewComment,
   handleEditComment,
   handleDeleteComment,
 }) {
   const classes = useStyles();
 
-  const { id, owner, datetime, content, comments } = post;
+  const {
+    postId: id,
+    username: owner,
+    created_at: datetime,
+    content,
+    comments,
+  } = post;
 
   // const [postContent, setPostContent] = useState(post.content);
   // const [comments] = useState(post.comments);
@@ -242,9 +247,51 @@ function PostCard({
     setDeleting(false);
   };
 
+  const handleEditPost = async (id, content) => {
+    const res = await API.editPost(id, content);
+    switch (res.statusCode) {
+      case 200:
+        window.location.reload();
+        break;
+      case 400:
+        alert(res.message);
+        break;
+      case 403:
+        alert(res.message);
+        break;
+      case 500:
+        alert(res.message);
+        break;
+      default:
+        alert("Something went wrong");
+        break;
+    }
+  };
+
   const handleEdit = (content) => {
     handleEditPost(id, content);
   };
+
+  const handleDeletePost = async (id) => {
+    const res = await API.deletePost(id);
+    switch (res.statusCode) {
+      case 200:
+        window.location.reload();
+        break;
+      case 400:
+        alert(res.message);
+        break;
+      case 403:
+        alert(res.message);
+        break;
+      case 500:
+        alert(res.message);
+      default:
+        alert("Something went wrong");
+        break;
+    }
+  };
+
   const handleDelete = () => {
     handleDeletePost(id);
   };

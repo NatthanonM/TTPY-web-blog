@@ -7,11 +7,16 @@ import {
 } from "react-router-dom";
 import Home from "./pages/home";
 import Login from "./pages/login";
-import history from "./History";
+
+import { createBrowserHistory } from "history";
 import API from "./utils/api";
 
+import cookie from "js-cookie";
+
+const history = createBrowserHistory();
+
 function App() {
-  const [islogin, setIsLogin] = useState(true);
+  const [islogin, setIsLogin] = useState(false);
   const [userProfile, setUserProfile] = useState({
     username: "Loading...",
     role: "Loading...",
@@ -33,8 +38,13 @@ function App() {
   };
 
   useEffect(() => {
-    getUser();
-  }, []);
+    if (!cookie.get("TTPY-LOG")) {
+      setIsLogin(false);
+    } else {
+      setIsLogin(true);
+      getUser();
+    }
+  }, [islogin]);
 
   return (
     <div>
@@ -44,14 +54,14 @@ function App() {
             path="/login"
             exact
             render={(props) =>
-              true ? <Login {...props} /> : <Redirect to="/" />
+              !islogin ? <Login {...props} /> : <Redirect to="/" />
             }
           />
           <Route
             path="/"
             exact
             render={(props) =>
-              true ? (
+              islogin ? (
                 <Home {...props} userProfile={userProfile} />
               ) : (
                 <Redirect to="/login" />

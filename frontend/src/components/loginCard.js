@@ -44,8 +44,6 @@ function LoginCard() {
     const res = await API.login(username, password);
 
     if (res.status === "success") {
-      // console.log(res.data);
-      // localStorage.setItem("token", res.data.token);
       history.push(`/`);
     } else {
       console.log(res.message);

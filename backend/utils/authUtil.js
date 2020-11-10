@@ -13,11 +13,13 @@ const jwtDecode = (token) => {
 
 const authMiddleware = (req, res, next) => {
   try {
-    var decoded = jwtDecode(req.headers.authorization);
+    // console.log(req.cookies);
+    var decoded = jwtDecode(req.cookies.jwt);
     req.user = {};
     req.user.userId = decoded.userId;
     next();
   } catch (error) {
+    // console.log(error);
     responseError(res, 401, error.message);
   }
 };

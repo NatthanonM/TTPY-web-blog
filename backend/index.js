@@ -10,7 +10,12 @@ const post = require("./routes/post");
 const comment = require("./routes/comment");
 const app = express();
 
-app.use(cors());
+const cookieParser = require("cookie-parser");
+app.use(cookieParser());
+
+// app.use(cors());
+app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 const { authMiddleware } = require("./utils/authUtil");

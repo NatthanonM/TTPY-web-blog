@@ -6,6 +6,7 @@ const { isModerator, getUser, isUser } = require("./userController");
 
 const postController = {
   uploadPost: async (req, res) => {
+    console.log(req.body);
     const { content } = req.body;
     const { userId } = req.user;
     if (await isUser(userId)) {
@@ -85,6 +86,7 @@ const postController = {
                 continue;
               }
               await convComment.push({
+                commentId: comments[j]._id,
                 username: commentOwner.username,
                 content: comments[j].content,
                 created_at: comments[j].created_at,
@@ -94,15 +96,16 @@ const postController = {
           }
 
           var p = {
+            postId: posts[i]._id,
             username: user.username,
             content: posts[i].content,
             created_at: posts[i].created_at,
             updated_at: posts[i].updated_at,
-            comment: convComment,
+            comments: convComment.reverse(),
           };
           allPosts.push(p);
         }
-        return responseSuccess(res, 200, allPosts);
+        return responseSuccess(res, 200, allPosts.reverse());
       } catch (error) {
         return responseError(res, 500, "Internal Server");
       }

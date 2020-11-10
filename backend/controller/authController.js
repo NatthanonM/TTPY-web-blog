@@ -66,25 +66,35 @@ const authController = {
           expiresIn: config.jwtExpiresIn,
         }
       );
-      // let decoded = jwt.verify(token, config.jwtSecret);
-      // console.log(token);
-      // console.log(decoded);
-      const cookieOptions = {
+      const log = jwt.sign(
+        {
+          log: true,
+        },
+        config.jwtSecret,
+        {
+          expiresIn: config.jwtExpiresIn,
+        }
+      );
+      res.cookie("TTPY-TOKEN", token, {
         expires: new Date(
           Date.now() + config.jwtCookieExpires * 24 * 60 * 60 * 1000
         ),
         httpOnly: true,
-      };
-      res.cookie("jwt", token, cookieOptions);
+      });
+      res.cookie("TTPY-LOG", log, {
+        expires: new Date(
+          Date.now() + config.jwtCookieExpires * 24 * 60 * 60 * 1000
+        ),
+      });
       return responseSuccess(res, 201, { token });
     } catch (err) {
-      // console.log(err);
       return responseError(res, 500, "Internal Error");
     }
   },
   logout: async (req, res, next) => {
     try {
-      res.clearCookie("jwt");
+      res.clearCookie("TTPY-TOKEN");
+      res.clearCookie("TTPY-LOG");
       return responseSuccess(res, 200, {});
     } catch (err) {
       return responseError(res, 500, "Internal Error");

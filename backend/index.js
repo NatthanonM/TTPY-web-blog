@@ -24,6 +24,7 @@ app.use("/auth", auth);
 app.use("/user", authMiddleware, user);
 app.use("/post", authMiddleware, post);
 app.use("/comment", authMiddleware, comment);
+app.use("/user", authMiddleware, user);
 
 app.listen(port, () => {
   console.log(`Start server at http://localhost:${port}`);

@@ -21,6 +21,7 @@ import CloseIcon from "@material-ui/icons/Close";
 import formatter from "../utils/formatter";
 import CommentSection from "./commentSection";
 import API from "../utils/api";
+import auth from "../utils/auth";
 
 const PALETTE_26 = [
   { color: "#FFFFFF", backgroundColor: "black" },
@@ -202,9 +203,10 @@ function DeleteDialog(props) {
 
 function PostCard({
   post,
-  handleNewComment,
-  handleEditComment,
-  handleDeleteComment,
+  userProfile,
+  // handleNewComment,
+  // handleEditComment,
+  // handleDeleteComment,
 }) {
   const classes = useStyles();
 
@@ -215,6 +217,22 @@ function PostCard({
     content,
     comments,
   } = post;
+
+  // console.log(userProfile.username);
+
+  const editable = () => {
+    if (
+      auth.isOwner(owner, userProfile.username) ||
+      auth.isModerator(userProfile.role)
+    )
+      return true;
+    else return false;
+  };
+
+  const deletable = () => {
+    if (auth.isModerator(userProfile.role)) return true;
+    else return false;
+  };
 
   // const [postContent, setPostContent] = useState(post.content);
   // const [comments] = useState(post.comments);
@@ -327,32 +345,40 @@ function PostCard({
                     .color,
               }}
             >
-              {owner.slice(0, 1)}
+              {owner.slice(0, 1).toUpperCase()}
             </Avatar>
           }
           action={
-            <div>
-              <Popover
-                id={popoverId}
-                open={open}
-                anchorEl={anchorEl}
-                onClose={handlePopoverClose}
-                anchorOrigin={{
-                  vertical: "top",
-                  horizontal: "left",
-                }}
-                transformOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
-              >
-                <MenuItem onClick={handleEditOpen}>Edit</MenuItem>
-                <MenuItem onClick={handleDeleteOpen}>Delete</MenuItem>
-              </Popover>
-              <IconButton label="settings" onClick={handleClick}>
-                <MoreVertIcon />
-              </IconButton>
-            </div>
+            editable() || deletable() ? (
+              <div>
+                <Popover
+                  id={popoverId}
+                  open={open}
+                  anchorEl={anchorEl}
+                  onClose={handlePopoverClose}
+                  anchorOrigin={{
+                    vertical: "top",
+                    horizontal: "left",
+                  }}
+                  transformOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                >
+                  {editable() && (
+                    <MenuItem onClick={handleEditOpen}>Edit</MenuItem>
+                  )}
+                  {deletable() && (
+                    <MenuItem onClick={handleDeleteOpen}>Delete</MenuItem>
+                  )}
+                </Popover>
+                <IconButton label="settings" onClick={handleClick}>
+                  <MoreVertIcon />
+                </IconButton>
+              </div>
+            ) : (
+              <></>
+            )
           }
           title={owner}
           subheader={formatter.formatDatetime(datetime)}
@@ -365,9 +391,10 @@ function PostCard({
         <CommentSection
           postId={id}
           comments={comments}
-          handleNewComment={handleNewComment}
-          handleEditComment={handleEditComment}
-          handleDeleteComment={handleDeleteComment}
+          userProfile={userProfile}
+          // handleNewComment={handleNewComment}
+          // handleEditComment={handleEditComment}
+          // handleDeleteComment={handleDeleteComment}
         />
       </Card>
     </Grid>

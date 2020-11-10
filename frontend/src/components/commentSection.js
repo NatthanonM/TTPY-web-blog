@@ -97,8 +97,9 @@ let comment_id = 5;
 function CommentSection({
   postId,
   comments,
-  handleEditComment,
-  handleDeleteComment,
+  userProfile,
+  // handleEditComment,
+  // handleDeleteComment,
 }) {
   const classes = useStyles();
 
@@ -167,13 +168,16 @@ function CommentSection({
           label="commentatorAvatar"
           style={{
             backgroundColor:
-              PALETTE_26["S".slice(0, 1).toUpperCase().charCodeAt() - 65]
-                .backgroundColor,
+              PALETTE_26[
+                userProfile.username.slice(0, 1).toUpperCase().charCodeAt() - 65
+              ].backgroundColor,
             color:
-              PALETTE_26["S".slice(0, 1).toUpperCase().charCodeAt() - 65].color,
+              PALETTE_26[
+                userProfile.username.slice(0, 1).toUpperCase().charCodeAt() - 65
+              ].color,
           }}
         >
-          S
+          {userProfile.username.slice(0, 1).toUpperCase()}
         </Avatar>
         <CssTextField
           placeholder="Write comment..."
@@ -199,8 +203,9 @@ function CommentSection({
             postId={postId}
             comment={comment}
             handleDelete={handleDelete}
-            handleEditComment={handleEditComment}
-            handleDeleteComment={handleDeleteComment}
+            userProfile={userProfile}
+            // handleEditComment={handleEditComment}
+            // handleDeleteComment={handleDeleteComment}
           />
         );
       })}

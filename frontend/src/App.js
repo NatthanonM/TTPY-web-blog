@@ -11,24 +11,28 @@ import history from "./History";
 import API from "./utils/api";
 
 function App() {
-  const [islogin, setIsLogin] = useState(false);
+  const [islogin, setIsLogin] = useState(true);
+  const [userProfile, setUserProfile] = useState({
+    username: "Natthanon",
+    role: "user",
+  });
 
-  const getIsLogin = async () => {
-    const res = await API.isLogin();
-    switch (res.statusCode) {
-      case 200:
-        setIsLogin(true);
-        break;
-      case 401:
-        setIsLogin(false);
-        break;
-    }
-  };
+  // const getIsLogin = async () => {
+  //   const res = await API.isLogin();
+  //   switch (res.statusCode) {
+  //     case 200:
+  //       setIsLogin(true);
+  //       break;
+  //     case 401:
+  //       setIsLogin(false);
+  //       break;
+  //   }
+  // };
 
   useEffect(() => {
-    getIsLogin();
-    console.log(islogin);
-  }, [islogin]);
+    // todo
+    // get user profile
+  }, []);
 
   return (
     <div>
@@ -37,16 +41,20 @@ function App() {
           <Route
             path="/login"
             exact
-            render={(props) => {
-              !islogin ? <Login {...props} /> : <Redirect to="/" />;
-            }}
+            render={(props) =>
+              true ? <Login {...props} /> : <Redirect to="/" />
+            }
           />
           <Route
             path="/"
             exact
-            render={(props) => {
-              islogin ? <Home {...props} /> : <Redirect to="/login" />;
-            }}
+            render={(props) =>
+              true ? (
+                <Home {...props} userProfile={userProfile} />
+              ) : (
+                <Redirect to="/login" />
+              )
+            }
           />
         </Switch>
       </Router>

@@ -18,6 +18,7 @@ import {
 import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import formatter from "../utils/formatter";
 import API from "../utils/api";
+import auth from "../utils/auth";
 
 const PALETTE_26 = [
   { color: "#FFFFFF", backgroundColor: "black" },
@@ -146,7 +147,13 @@ function DeleteDialog(props) {
   );
 }
 
-function CommentCard({ postId, comment, handleDelete, handleDeleteComment }) {
+function CommentCard({
+  postId,
+  comment,
+  userProfile,
+  // handleDelete,
+  // handleDeleteComment,
+}) {
   const classes = useStyles();
 
   const {
@@ -155,6 +162,15 @@ function CommentCard({ postId, comment, handleDelete, handleDeleteComment }) {
     created_at: datetime,
     content,
   } = comment;
+
+  const editable = () => {
+    if (
+      auth.isOwner(owner, userProfile.username) ||
+      auth.isModerator(userProfile.role)
+    )
+      return true;
+    else return false;
+  };
 
   const [commentContent, setCommentContent] = useState(content);
   const [error, setError] = useState(false);
@@ -169,7 +185,6 @@ function CommentCard({ postId, comment, handleDelete, handleDeleteComment }) {
   };
 
   const [editing, setEditting] = useState(false);
-  const [deleting, setDeleting] = useState(false);
 
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -192,14 +207,6 @@ function CommentCard({ postId, comment, handleDelete, handleDeleteComment }) {
   const handleEditClose = () => {
     setEditting(false);
     // setCommentContent(comment);
-  };
-
-  const handleDeleteOpen = () => {
-    handlePopoverClose();
-    setDeleting(true);
-  };
-  const handleDeleteClose = () => {
-    setDeleting(false);
   };
 
   const handleEditComment = async (id, commentContent) => {
@@ -232,21 +239,11 @@ function CommentCard({ postId, comment, handleDelete, handleDeleteComment }) {
     }
   };
 
-  const handleDeleteDialog = () => {
-    handleDelete(id);
-    handleDeleteComment(postId, id);
-  };
-
   const open = Boolean(anchorEl);
   const popoverId = open ? "simple-popover" : undefined;
 
   return (
     <>
-      <DeleteDialog
-        onClose={handleDeleteClose}
-        open={deleting}
-        handleDelete={handleDeleteDialog}
-      />
       <CardActions className={classes.padding}>
         <Grid container>
           <Grid item>
@@ -265,37 +262,40 @@ function CommentCard({ postId, comment, handleDelete, handleDeleteComment }) {
                   ].color,
               }}
             >
-              {owner.slice(0, 1)}
+              {owner.slice(0, 1).toUpperCase()}
             </Avatar>
           </Grid>
           <Grid item style={{ marginLeft: 8, maxWidth: "80%" }}>
             <Card style={{ backgroundColor: "#F2F3F5", maxWidth: "100%" }}>
               <CardHeader
                 className={classes.padding}
-                style={{ paddingRight: 8, maxWidth: "100%" }}
+                // style={{ paddingRight: 8, maxWidth: "100%" }}
                 action={
-                  <div>
-                    <Popover
-                      id={popoverId}
-                      open={open}
-                      anchorEl={anchorEl}
-                      onClose={handlePopoverClose}
-                      anchorOrigin={{
-                        vertical: "top",
-                        horizontal: "right",
-                      }}
-                      transformOrigin={{
-                        vertical: "top",
-                        horizontal: "left",
-                      }}
-                    >
-                      <MenuItem onClick={handleEditOpen}>Edit</MenuItem>
-                      <MenuItem onClick={handleDeleteOpen}>Delete</MenuItem>
-                    </Popover>
-                    <IconButton label="settings" onClick={handleClick}>
-                      <MoreHorizIcon />
-                    </IconButton>
-                  </div>
+                  editable() ? (
+                    <div>
+                      <Popover
+                        id={popoverId}
+                        open={open}
+                        anchorEl={anchorEl}
+                        onClose={handlePopoverClose}
+                        anchorOrigin={{
+                          vertical: "top",
+                          horizontal: "right",
+                        }}
+                        transformOrigin={{
+                          vertical: "top",
+                          horizontal: "left",
+                        }}
+                      >
+                        <MenuItem onClick={handleEditOpen}>Edit</MenuItem>
+                      </Popover>
+                      <IconButton label="settings" onClick={handleClick}>
+                        <MoreHorizIcon />
+                      </IconButton>
+                    </div>
+                  ) : (
+                    <></>
+                  )
                 }
                 title={
                   <Typography variant="body2" component="p">

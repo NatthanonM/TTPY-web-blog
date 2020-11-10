@@ -65,10 +65,11 @@ const CssTextField = withStyles({
 const useStyles = makeStyles({
   card: {
     width: "80vw",
+    borderRadius: 16,
   },
 });
 
-function NewPostCard() {
+function NewPostCard({ userProfile }) {
   const history = useHistory();
   const classes = useStyles();
 
@@ -119,14 +120,18 @@ function NewPostCard() {
             label="commentatorAvatar"
             style={{
               backgroundColor:
-                PALETTE_26["S".slice(0, 1).toUpperCase().charCodeAt() - 65]
-                  .backgroundColor,
+                PALETTE_26[
+                  userProfile.username.slice(0, 1).toUpperCase().charCodeAt() -
+                    65
+                ].backgroundColor,
               color:
-                PALETTE_26["S".slice(0, 1).toUpperCase().charCodeAt() - 65]
-                  .color,
+                PALETTE_26[
+                  userProfile.username.slice(0, 1).toUpperCase().charCodeAt() -
+                    65
+                ].color,
             }}
           >
-            S
+            {userProfile.username.slice(0, 1).toUpperCase()}
           </Avatar>
           <CssTextField
             placeholder="Post something..."

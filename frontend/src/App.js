@@ -28,6 +28,20 @@ function App() {
       case 200:
         setUserProfile(res.data);
         break;
+      case 401:
+        const resLogout = await API.logout();
+        switch (resLogout.statusCode) {
+          case 200:
+            window.location.reload();
+            break;
+          case 500:
+            alert(resLogout.message);
+            break;
+          default:
+            alert("Something went wrong");
+            break;
+        }
+        break;
       case 500:
         alert(res.message);
         break;

@@ -277,7 +277,18 @@ function PostCard({
         alert(res.message);
         break;
       case 401:
-        history.push("/login");
+        const resLogout = await API.logout();
+        switch (resLogout.statusCode) {
+          case 200:
+            window.location.reload();
+            break;
+          case 500:
+            alert(resLogout.message);
+            break;
+          default:
+            alert("Something went wrong");
+            break;
+        }
         break;
       case 403:
         alert(res.message);
@@ -305,7 +316,18 @@ function PostCard({
         alert(res.message);
         break;
       case 401:
-        history.push("/login");
+        const resLogout = await API.logout();
+        switch (resLogout.statusCode) {
+          case 200:
+            window.location.reload();
+            break;
+          case 500:
+            alert(resLogout.message);
+            break;
+          default:
+            alert("Something went wrong");
+            break;
+        }
         break;
       case 403:
         alert(res.message);

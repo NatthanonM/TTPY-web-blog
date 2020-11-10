@@ -17,16 +17,13 @@ const useStyles = makeStyles({
   },
 });
 
-const user = "user";
-const pass = "pas";
-
 function LoginCard() {
   const history = useHistory();
 
   const classes = useStyles();
 
-  const [username, setUsername] = useState(user);
-  const [password, setPassword] = useState(pass);
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState(false);
 
   const onClick = () => {

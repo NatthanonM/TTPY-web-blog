@@ -28,8 +28,8 @@ const API = {
     });
     return response.json();
   },
-  isLogin: async () => {
-    const URL = `${config.BACKEND_URI}/auth/isLogin`;
+  getUser: async () => {
+    const URL = `${config.BACKEND_URI}/user`;
     const response = await fetch(URL, {
       method: "GET",
       mode: "cors",

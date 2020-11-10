@@ -19,6 +19,7 @@ import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import formatter from "../utils/formatter";
 import API from "../utils/api";
 import auth from "../utils/auth";
+import { useHistory } from "react-router-dom";
 
 const PALETTE_26 = [
   { color: "#FFFFFF", backgroundColor: "black" },
@@ -155,6 +156,7 @@ function CommentCard({
   // handleDeleteComment,
 }) {
   const classes = useStyles();
+  const history = useHistory();
 
   const {
     commentId: id,
@@ -217,6 +219,9 @@ function CommentCard({
         break;
       case 400:
         alert(res.message);
+        break;
+      case 401:
+        history.push("/login");
         break;
       case 403:
         alert(res.message);

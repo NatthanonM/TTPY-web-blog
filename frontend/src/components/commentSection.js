@@ -19,6 +19,7 @@ import SendIcon from "@material-ui/icons/Send";
 import formatter from "../utils/formatter";
 import CommentCard from "./commentCard";
 import API from "../utils/api";
+import { useHistory } from "react-router-dom";
 
 const PALETTE_26 = [
   { color: "#FFFFFF", backgroundColor: "black" },
@@ -102,6 +103,7 @@ function CommentSection({
   // handleDeleteComment,
 }) {
   const classes = useStyles();
+  const history = useHistory();
 
   const [postComments, setPostComments] = useState(comments);
   const [newComment, setNewComment] = useState("");
@@ -128,6 +130,9 @@ function CommentSection({
         break;
       case 400:
         alert(res.message);
+        break;
+      case 401:
+        history.push("/login");
         break;
       case 403:
         alert(res.message);
@@ -199,7 +204,7 @@ function CommentSection({
       {postComments.map((comment) => {
         return (
           <CommentCard
-            key={comment.id}
+            key={comment.commentId}
             postId={postId}
             comment={comment}
             handleDelete={handleDelete}

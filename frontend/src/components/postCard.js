@@ -17,6 +17,7 @@ import {
 } from "@material-ui/core";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import CloseIcon from "@material-ui/icons/Close";
+import { useHistory } from "react-router-dom";
 
 import formatter from "../utils/formatter";
 import CommentSection from "./commentSection";
@@ -209,6 +210,7 @@ function PostCard({
   // handleDeleteComment,
 }) {
   const classes = useStyles();
+  const history = useHistory();
 
   const {
     postId: id,
@@ -274,6 +276,9 @@ function PostCard({
       case 400:
         alert(res.message);
         break;
+      case 401:
+        history.push("/login");
+        break;
       case 403:
         alert(res.message);
         break;
@@ -298,6 +303,9 @@ function PostCard({
         break;
       case 400:
         alert(res.message);
+        break;
+      case 401:
+        history.push("/login");
         break;
       case 403:
         alert(res.message);

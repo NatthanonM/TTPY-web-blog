@@ -13,25 +13,27 @@ import API from "./utils/api";
 function App() {
   const [islogin, setIsLogin] = useState(true);
   const [userProfile, setUserProfile] = useState({
-    username: "Natthanon",
-    role: "user",
+    username: "Loading...",
+    role: "Loading...",
   });
 
-  // const getIsLogin = async () => {
-  //   const res = await API.isLogin();
-  //   switch (res.statusCode) {
-  //     case 200:
-  //       setIsLogin(true);
-  //       break;
-  //     case 401:
-  //       setIsLogin(false);
-  //       break;
-  //   }
-  // };
+  const getUser = async () => {
+    const res = await API.getUser();
+    switch (res.statusCode) {
+      case 200:
+        setUserProfile(res.data);
+        break;
+      case 500:
+        alert(res.message);
+        break;
+      default:
+        alert("Something went wrong");
+        break;
+    }
+  };
 
   useEffect(() => {
-    // todo
-    // get user profile
+    getUser();
   }, []);
 
   return (

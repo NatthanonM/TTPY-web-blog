@@ -65,7 +65,7 @@ function Home({ userProfile }) {
 
     switch (res.statusCode) {
       case 200:
-        console.log(res.data);
+        // console.log(res.data);
         setPosts(res.data);
         break;
       case 500:
@@ -192,7 +192,7 @@ function Home({ userProfile }) {
           posts.map((post) => {
             return (
               <PostCard
-                key={post.id}
+                key={post.postId}
                 post={post}
                 userProfile={userProfile}
                 // handleEditPost={handleEditPost}

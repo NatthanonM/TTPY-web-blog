@@ -91,6 +91,9 @@ function NewPostCard({ userProfile }) {
       case 201:
         window.location.reload();
         break;
+      case 401:
+        history.push("/login");
+        break;
       case 403:
         alert(res.message);
         break;

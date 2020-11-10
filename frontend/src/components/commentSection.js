@@ -20,6 +20,7 @@ import formatter from "../utils/formatter";
 import CommentCard from "./commentCard";
 import API from "../utils/api";
 import { useHistory } from "react-router-dom";
+import auth from "../utils/auth";
 
 const PALETTE_26 = [
   { color: "#FFFFFF", backgroundColor: "black" },
@@ -168,39 +169,43 @@ function CommentSection({
 
   return (
     <>
-      <CardActions className={classes.padding}>
-        <Avatar
-          label="commentatorAvatar"
-          style={{
-            backgroundColor:
-              PALETTE_26[
-                userProfile.username.slice(0, 1).toUpperCase().charCodeAt() - 65
-              ].backgroundColor,
-            color:
-              PALETTE_26[
-                userProfile.username.slice(0, 1).toUpperCase().charCodeAt() - 65
-              ].color,
-          }}
-        >
-          {userProfile.username.slice(0, 1).toUpperCase()}
-        </Avatar>
-        <CssTextField
-          placeholder="Write comment..."
-          size="small"
-          variant="outlined"
-          style={{
-            color: "black",
-            width: "100%",
-          }}
-          value={newComment}
-          onChange={handleNewCommentChange}
-          onClick={onClick}
-          error={error}
-        />
-        <IconButton label="sendComment" onClick={handleSendCommment}>
-          <SendIcon style={{ color: "#1877F2" }} />
-        </IconButton>
-      </CardActions>
+      {!auth.isModerator(userProfile.role) && (
+        <CardActions className={classes.padding}>
+          <Avatar
+            label="commentatorAvatar"
+            style={{
+              backgroundColor:
+                PALETTE_26[
+                  userProfile.username.slice(0, 1).toUpperCase().charCodeAt() -
+                    65
+                ].backgroundColor,
+              color:
+                PALETTE_26[
+                  userProfile.username.slice(0, 1).toUpperCase().charCodeAt() -
+                    65
+                ].color,
+            }}
+          >
+            {userProfile.username.slice(0, 1).toUpperCase()}
+          </Avatar>
+          <CssTextField
+            placeholder="Write comment..."
+            size="small"
+            variant="outlined"
+            style={{
+              color: "black",
+              width: "100%",
+            }}
+            value={newComment}
+            onChange={handleNewCommentChange}
+            onClick={onClick}
+            error={error}
+          />
+          <IconButton label="sendComment" onClick={handleSendCommment}>
+            <SendIcon style={{ color: "#1877F2" }} />
+          </IconButton>
+        </CardActions>
+      )}
       {postComments.map((comment) => {
         return (
           <CommentCard

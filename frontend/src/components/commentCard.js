@@ -166,11 +166,7 @@ function CommentCard({
   } = comment;
 
   const editable = () => {
-    if (
-      auth.isOwner(owner, userProfile.username) ||
-      auth.isModerator(userProfile.role)
-    )
-      return true;
+    if (auth.isOwner(owner, userProfile.username)) return true;
     else return false;
   };
 

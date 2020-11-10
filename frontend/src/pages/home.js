@@ -58,6 +58,7 @@ function Home({ userProfile }) {
   const history = useHistory();
   const classes = useStyles();
   const [posts, setPosts] = useState([]);
+  // const [isLoading, setIsloading] = useState(true);
   const [getAllPostError, setGetAllPostError] = useState(false);
 
   const getAllPost = async () => {
@@ -83,7 +84,7 @@ function Home({ userProfile }) {
     const res = await API.logout();
     switch (res.statusCode) {
       case 200:
-        history.push("/login");
+        window.location.reload();
         break;
       case 500:
         alert(res.message);

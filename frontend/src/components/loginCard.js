@@ -44,7 +44,7 @@ function LoginCard() {
     const res = await API.login(username, password);
 
     if (res.status === "success") {
-      history.push(`/`);
+      window.location.reload();
     } else {
       console.log(res.message);
       setError(true);

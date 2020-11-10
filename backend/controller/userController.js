@@ -10,6 +10,16 @@ const userController = {
       return responseError(res, 500, "Internal Server");
     }
   },
+  getMyProfile: async (req, res) => {
+    const { userId } = req.user;
+    try {
+      var user = await UserModel.findById(userId);
+      var { username, role } = user;
+      return responseSuccess(res, 200, { username, role });
+    } catch (error) {
+      return responseError(res, 500, "Internal Server");
+    }
+  },
   getUser: async (userId) => {
     try {
       var user = await UserModel.findById(userId);

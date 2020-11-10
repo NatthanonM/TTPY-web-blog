@@ -13,10 +13,10 @@ const jwtDecode = (token) => {
 
 const authMiddleware = (req, res, next) => {
   try {
-    var decoded = jwtDecode(req.cookies["TTPY-TOKEN"]);
-    console.log(decoded);
+    var decodedToken = jwtDecode(req.cookies["TTPY-TOKEN"]);
+    var decodedLog = jwtDecode(req.cookies["TTPY-LOG"]);
     req.user = {};
-    req.user.userId = decoded.userId;
+    req.user.userId = decodedToken.userId;
     next();
   } catch (error) {
     responseError(res, 401, error.message);

@@ -28,8 +28,8 @@ const API = {
     });
     return response.json();
   },
-  isLogin: async () => {
-    const URL = `${config.BACKEND_URI}/auth/isLogin`;
+  getUser: async () => {
+    const URL = `${config.BACKEND_URI}/user`;
     const response = await fetch(URL, {
       method: "GET",
       mode: "cors",
@@ -46,9 +46,9 @@ const API = {
     const response = await fetch(URL, {
       method: "GET",
       mode: "cors",
+      cache: "no-cache",
       credentials: "include",
       headers: {
-        // Authorization: localStorage.getItem("token"),
         "Content-Type": "application/json",
       },
     });
@@ -61,9 +61,9 @@ const API = {
       method: "POST",
       mode: "cors",
       cache: "no-cache",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
-        Authorization: localStorage.getItem("token"),
       },
       body: JSON.stringify({ content }),
     });
@@ -74,8 +74,10 @@ const API = {
     const response = await fetch(URL, {
       method: "DELETE",
       mode: "cors",
+      cache: "no-cache",
+      credentials: "include",
       headers: {
-        Authorization: localStorage.getItem("token"),
+        "Content-Type": "application/json",
       },
     });
     return response.json();
@@ -86,9 +88,9 @@ const API = {
       method: "PATCH",
       mode: "cors",
       cache: "no-cache",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
-        Authorization: localStorage.getItem("token"),
       },
       body: JSON.stringify({ content }),
     });
@@ -100,9 +102,9 @@ const API = {
       method: "POST",
       mode: "cors",
       cache: "no-cache",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
-        Authorization: localStorage.getItem("token"),
       },
       body: JSON.stringify({ postId, content }),
     });
@@ -114,9 +116,9 @@ const API = {
       method: "PATCH",
       mode: "cors",
       cache: "no-cache",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
-        Authorization: localStorage.getItem("token"),
       },
       body: JSON.stringify({ content }),
     });

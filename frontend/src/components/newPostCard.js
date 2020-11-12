@@ -65,10 +65,11 @@ const CssTextField = withStyles({
 const useStyles = makeStyles({
   card: {
     width: "80vw",
+    borderRadius: 16,
   },
 });
 
-function NewPostCard() {
+function NewPostCard({ userProfile }) {
   const history = useHistory();
   const classes = useStyles();
 
@@ -89,6 +90,20 @@ function NewPostCard() {
     switch (res.statusCode) {
       case 201:
         window.location.reload();
+        break;
+      case 401:
+        const resLogout = await API.logout();
+        switch (resLogout.statusCode) {
+          case 200:
+            window.location.reload();
+            break;
+          case 500:
+            alert(resLogout.message);
+            break;
+          default:
+            alert("Something went wrong");
+            break;
+        }
         break;
       case 403:
         alert(res.message);
@@ -119,14 +134,18 @@ function NewPostCard() {
             label="commentatorAvatar"
             style={{
               backgroundColor:
-                PALETTE_26["S".slice(0, 1).toUpperCase().charCodeAt() - 65]
-                  .backgroundColor,
+                PALETTE_26[
+                  userProfile.username.slice(0, 1).toUpperCase().charCodeAt() -
+                    65
+                ].backgroundColor,
               color:
-                PALETTE_26["S".slice(0, 1).toUpperCase().charCodeAt() - 65]
-                  .color,
+                PALETTE_26[
+                  userProfile.username.slice(0, 1).toUpperCase().charCodeAt() -
+                    65
+                ].color,
             }}
           >
-            S
+            {userProfile.username.slice(0, 1).toUpperCase()}
           </Avatar>
           <CssTextField
             placeholder="Post something..."

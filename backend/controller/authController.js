@@ -80,6 +80,7 @@ const authController = {
           Date.now() + config.jwtCookieExpires * 24 * 60 * 60 * 1000
         ),
         httpOnly: true,
+        sameSite: "strict",
       });
       res.cookie("TTPY-LOG", log, {
         expires: new Date(

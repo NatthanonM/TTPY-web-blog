@@ -11,21 +11,19 @@ const comment = require("./routes/comment");
 const app = express();
 const cookieParser = require("cookie-parser");
 const frameguard = require("frameguard");
-const csrf = require("csurf");
-const csrfProtection = csrf({ cookie: true });
 const { authMiddleware } = require("./utils/authUtil");
 
 app.use(frameguard({ action: "SAMEORIGIN" }));
 app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser());
 
 app.use("/auth", auth);
-app.use("/user", csrfProtection, authMiddleware, user);
-app.use("/post", csrfProtection, authMiddleware, post);
-app.use("/comment", csrfProtection, authMiddleware, comment);
-app.use("/user", csrfProtection, authMiddleware, user);
+app.use("/user", authMiddleware, user);
+app.use("/post", authMiddleware, post);
+app.use("/comment", authMiddleware, comment);
+app.use("/user", authMiddleware, user);
 
 app.listen(port, () => {
   console.log(`Start server at http://localhost:${port}`);

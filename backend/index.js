@@ -9,11 +9,12 @@ const auth = require("./routes/auth");
 const post = require("./routes/post");
 const comment = require("./routes/comment");
 const app = express();
-
 const cookieParser = require("cookie-parser");
+const frameguard = require("frameguard");
+
+app.use(frameguard({ action: "SAMEORIGIN" }));
 app.use(cookieParser());
 
-// app.use(cors());
 app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
 
 app.use(bodyParser.urlencoded({ extended: true }));

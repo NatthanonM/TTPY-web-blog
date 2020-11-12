@@ -3,7 +3,7 @@ const formatter = {
     const datetime = new Date(timestamp);
     const datevalues = [
       datetime.getFullYear(),
-      datetime.getMonth() + 1,
+      datetime.getMonth(),
       datetime.getDate(),
       datetime.getHours() < 10
         ? "0" + datetime.getHours()

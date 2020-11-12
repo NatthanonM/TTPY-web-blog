@@ -1,12 +1,20 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { Fab, Grid, Typography } from "@material-ui/core";
+import {
+  AppBar,
+  Avatar,
+  Chip,
+  IconButton,
+  Grid,
+  Typography,
+} from "@material-ui/core";
 import PostCard from "../components/postCard";
 import NewPostCard from "../components/newPostCard";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import { posts as oriPosts } from "../mock";
 import { useHistory } from "react-router-dom";
 import API from "../utils/api";
+import auth from "../utils/auth";
 
 const backgroundColor = "#F0F2F5";
 
@@ -17,10 +25,40 @@ const useStyles = makeStyles({
   },
 });
 
-function Home() {
+const PALETTE_26 = [
+  { color: "#FFFFFF", backgroundColor: "black" },
+  { color: "#F0A3FF", backgroundColor: "black" },
+  { color: "#0075DC", backgroundColor: "#F0F2F5" },
+  { color: "#993F00", backgroundColor: "#F0F2F5" },
+  { color: "#4C005C", backgroundColor: "#F0F2F5" },
+  { color: "#191919", backgroundColor: "#F0F2F5" },
+  { color: "#005C31", backgroundColor: "#F0F2F5" },
+  { color: "#2BCE48", backgroundColor: "black" },
+  { color: "#808080", backgroundColor: "#F0F2F5" },
+  { color: "#94FFB5", backgroundColor: "black" },
+  { color: "#8F7C00", backgroundColor: "#F0F2F5" },
+  { color: "#9DCC00", backgroundColor: "#F0F2F5" },
+  { color: "#C20088", backgroundColor: "#F0F2F5" },
+  { color: "#003380", backgroundColor: "#F0F2F5" },
+  { color: "#FFA405", backgroundColor: "#F0F2F5" },
+  { color: "#FFA8BB", backgroundColor: "#F0F2F5" },
+  { color: "#426600", backgroundColor: "#F0F2F5" },
+  { color: "#FF0010", backgroundColor: "#F0F2F5" },
+  { color: "#5EF1F2", backgroundColor: "black" },
+  { color: "#00998F", backgroundColor: "#F0F2F5" },
+  { color: "#E0FF66", backgroundColor: "black" },
+  { color: "#740AFF", backgroundColor: "#F0F2F5" },
+  { color: "#990000", backgroundColor: "black" },
+  { color: "#FFFF80", backgroundColor: "black" },
+  { color: "#FFFF00", backgroundColor: "black" },
+  { color: "#FFFFFF", backgroundColor: "#F0F2F5" },
+];
+
+function Home({ userProfile }) {
   const history = useHistory();
   const classes = useStyles();
   const [posts, setPosts] = useState([]);
+  // const [isLoading, setIsloading] = useState(true);
   const [getAllPostError, setGetAllPostError] = useState(false);
 
   const getAllPost = async () => {
@@ -28,7 +66,7 @@ function Home() {
 
     switch (res.statusCode) {
       case 200:
-        console.log(res.data);
+        // console.log(res.data);
         setPosts(res.data);
         break;
       case 500:
@@ -46,7 +84,7 @@ function Home() {
     const res = await API.logout();
     switch (res.statusCode) {
       case 200:
-        history.push("/login");
+        window.location.reload();
         break;
       case 500:
         alert(res.message);
@@ -61,102 +99,103 @@ function Home() {
     logout();
   };
 
-  // const handleEditPost = (id, newContent) => {
-  //   setPosts(
-  //     posts.map((post) => {
-  //       if (post.id === id) post.content = newContent;
-  //       return post;
-  //     })
-  //   );
-  // };
-
-  // const handleDeletePost = (id) => {
-  //   setPosts(posts.filter((post) => post.id !== id));
-  // };
-
-  // const handleNewPost = (content) => {
-  //   setPosts([
-  //     {
-  //       id: posts.length + 1,
-  //       owner: "S",
-  //       datetime: Date.now(),
-  //       content: content,
-  //       comments: [],
-  //     },
-  //     ...posts,
-  //   ]);
-  // };
-
-  // const handleNewComment = (postId, comment) => {
-  //   setPosts(
-  //     posts.map((post) => {
-  //       if (post.id === postId) {
-  //         post.comments = [
-  //           {
-  //             id: comment_id,
-  //             owner: "Suchut Sapsathien",
-  //             datetime: Date.now(),
-  //             content: comment,
-  //           },
-  //           ...post.comments,
-  //         ];
-  //       }
-  //       return post;
-  //     })
-  //   );
-  //   comment_id = comment_id + 1;
-  // };
-
-  // const handleEditComment = (postId, commentId, newComment) => {
-  //   let newPosts = [...posts];
-  //   for (let i = 0; i < newPosts.length; i++) {
-  //     if (newPosts[i]["id"] === postId) {
-  //       for (let j = 0; j < newPosts[i]["comments"].length; j++) {
-  //         if (newPosts[i]["comments"][j].id === commentId) {
-  //           newPosts[i]["comments"][j].content = newComment;
-  //           setPosts(newPosts);
-  //           return;
-  //         }
-  //       }
-  //     }
-  //   }
-  // };
-
-  // const handleDeleteComment = (postId, commentId) => {
-  //   let newPosts = posts;
-  //   console.log(posts);
-  //   for (let i = 0; i < newPosts.length; i++) {
-  //     if (newPosts[i]["id"] === postId) {
-  //       newPosts[i]["comments"] = newPosts[i]["comments"].filter(
-  //         (comment) => comment.id === commentId
-  //       );
-  //       setPosts(newPosts);
-  //       console.log(newPosts);
-  //       return;
-  //     }
-  //   }
-  // };
-
   return (
     <div className={classes.root}>
+      <AppBar position="fixed" style={{ height: 64 }}>
+        {/* <NewPostCard /> */}
+        <Grid
+          container
+          justify="flex-end"
+          alignItems="center"
+          style={{
+            height: 64,
+            paddingLeft: 16,
+            paddingRight: 16,
+            background: "#3578E5",
+          }}
+        >
+          <Grid
+            item
+            style={{
+              paddingRight: 8,
+            }}
+          >
+            <Avatar
+              label="commentatorAvatar"
+              style={{
+                backgroundColor:
+                  PALETTE_26[
+                    userProfile.username
+                      .slice(0, 1)
+                      .toUpperCase()
+                      .charCodeAt() - 65
+                  ].backgroundColor,
+                color:
+                  PALETTE_26[
+                    userProfile.username
+                      .slice(0, 1)
+                      .toUpperCase()
+                      .charCodeAt() - 65
+                  ].color,
+              }}
+            >
+              {userProfile.username.slice(0, 1).toUpperCase()}
+            </Avatar>
+          </Grid>
+          <Grid
+            item
+            style={{
+              paddingRight: 8,
+            }}
+          >
+            <Typography>
+              {auth.isModerator(userProfile.role)
+                ? "<<MOD>> " + userProfile.username
+                : userProfile.username}
+            </Typography>
+          </Grid>
+          <Grid item>
+            <IconButton
+              color="primary"
+              style={{
+                backgroundColor: "#E4E6EB",
+                boxShadow: 0,
+                width: 48,
+                height: 48,
+              }}
+              onClick={handleLogout}
+            >
+              <ExitToAppIcon
+                style={{
+                  backgroundColor: "#E4E6EB",
+                  color: "#000000",
+                }}
+              />
+            </IconButton>
+          </Grid>
+        </Grid>
+      </AppBar>
       <Grid
         container
         item
         direction="row"
         justify="center"
-        style={{ padding: 24 }}
+        style={{ padding: 24, paddingTop: 24 + 64 }}
       >
-        <NewPostCard
-        // handleNewPost={handleNewPost}
-        />
+        {userProfile.role === "user" ? (
+          <NewPostCard userProfile={userProfile} />
+        ) : (
+          <></>
+        )}
         {getAllPostError ? (
           <Typography>Something went wrong</Typography>
         ) : (
           posts.map((post) => {
             return (
               <PostCard
-                key={post.id}
+                key={post.postId}
                 post={post}
+                userProfile={userProfile}
                 // handleEditPost={handleEditPost}
                 // handleDeletePost={handleDeletePost}
                 // handleNewComment={handleNewComment}
@@ -166,7 +205,7 @@ function Home() {
             );
           })
         )}
-        <Fab
+        {/* <Fab
           color="primary"
           style={{
             position: "fixed",
@@ -178,7 +217,7 @@ function Home() {
           onClick={handleLogout}
         >
           <ExitToAppIcon style={{ backgroundColor: "#FA383E" }} />
-        </Fab>
+        </Fab> */}
       </Grid>
     </div>
   );

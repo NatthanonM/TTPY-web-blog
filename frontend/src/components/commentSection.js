@@ -19,6 +19,8 @@ import SendIcon from "@material-ui/icons/Send";
 import formatter from "../utils/formatter";
 import CommentCard from "./commentCard";
 import API from "../utils/api";
+import { useHistory } from "react-router-dom";
+import auth from "../utils/auth";
 
 const PALETTE_26 = [
   { color: "#FFFFFF", backgroundColor: "black" },
@@ -97,10 +99,12 @@ let comment_id = 5;
 function CommentSection({
   postId,
   comments,
-  handleEditComment,
-  handleDeleteComment,
+  userProfile,
+  // handleEditComment,
+  // handleDeleteComment,
 }) {
   const classes = useStyles();
+  const history = useHistory();
 
   const [postComments, setPostComments] = useState(comments);
   const [newComment, setNewComment] = useState("");
@@ -127,6 +131,20 @@ function CommentSection({
         break;
       case 400:
         alert(res.message);
+        break;
+      case 401:
+        const resLogout = await API.logout();
+        switch (resLogout.statusCode) {
+          case 200:
+            window.location.reload();
+            break;
+          case 500:
+            alert(resLogout.message);
+            break;
+          default:
+            alert("Something went wrong");
+            break;
+        }
         break;
       case 403:
         alert(res.message);
@@ -162,45 +180,53 @@ function CommentSection({
 
   return (
     <>
-      <CardActions className={classes.padding}>
-        <Avatar
-          label="commentatorAvatar"
-          style={{
-            backgroundColor:
-              PALETTE_26["S".slice(0, 1).toUpperCase().charCodeAt() - 65]
-                .backgroundColor,
-            color:
-              PALETTE_26["S".slice(0, 1).toUpperCase().charCodeAt() - 65].color,
-          }}
-        >
-          S
-        </Avatar>
-        <CssTextField
-          placeholder="Write comment..."
-          size="small"
-          variant="outlined"
-          style={{
-            color: "black",
-            width: "100%",
-          }}
-          value={newComment}
-          onChange={handleNewCommentChange}
-          onClick={onClick}
-          error={error}
-        />
-        <IconButton label="sendComment" onClick={handleSendCommment}>
-          <SendIcon style={{ color: "#1877F2" }} />
-        </IconButton>
-      </CardActions>
+      {!auth.isModerator(userProfile.role) && (
+        <CardActions className={classes.padding}>
+          <Avatar
+            label="commentatorAvatar"
+            style={{
+              backgroundColor:
+                PALETTE_26[
+                  userProfile.username.slice(0, 1).toUpperCase().charCodeAt() -
+                    65
+                ].backgroundColor,
+              color:
+                PALETTE_26[
+                  userProfile.username.slice(0, 1).toUpperCase().charCodeAt() -
+                    65
+                ].color,
+            }}
+          >
+            {userProfile.username.slice(0, 1).toUpperCase()}
+          </Avatar>
+          <CssTextField
+            placeholder="Write comment..."
+            size="small"
+            variant="outlined"
+            style={{
+              color: "black",
+              width: "100%",
+            }}
+            value={newComment}
+            onChange={handleNewCommentChange}
+            onClick={onClick}
+            error={error}
+          />
+          <IconButton label="sendComment" onClick={handleSendCommment}>
+            <SendIcon style={{ color: "#1877F2" }} />
+          </IconButton>
+        </CardActions>
+      )}
       {postComments.map((comment) => {
         return (
           <CommentCard
-            key={comment.id}
+            key={comment.commentId}
             postId={postId}
             comment={comment}
             handleDelete={handleDelete}
-            handleEditComment={handleEditComment}
-            handleDeleteComment={handleDeleteComment}
+            userProfile={userProfile}
+            // handleEditComment={handleEditComment}
+            // handleDeleteComment={handleDeleteComment}
           />
         );
       })}

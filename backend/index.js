@@ -11,17 +11,15 @@ const comment = require("./routes/comment");
 const app = express();
 const cookieParser = require("cookie-parser");
 const frameguard = require("frameguard");
-var csurf = require("csurf");
+const csrf = require("csurf");
+const csrfProtection = csrf({ cookie: true });
+const { authMiddleware } = require("./utils/authUtil");
 
 app.use(frameguard({ action: "SAMEORIGIN" }));
-var csrfProtection = csurf({ cookie: true });
-app.use(cookieParser());
-
 app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
-
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-const { authMiddleware } = require("./utils/authUtil");
+app.use(cookieParser());
 
 app.use("/auth", auth);
 app.use("/user", csrfProtection, authMiddleware, user);

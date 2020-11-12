@@ -6,7 +6,6 @@ const { isModerator, getUser, isUser } = require("./userController");
 
 const postController = {
   uploadPost: async (req, res) => {
-    console.log(req.body);
     const { content } = req.body;
     const { userId } = req.user;
     if (await isUser(userId)) {

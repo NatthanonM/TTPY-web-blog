@@ -1,7 +1,24 @@
 import config from "../config";
+import crypto from "crypto";
+
+function encrypt(text) {
+  let iv = crypto.randomBytes(16);
+  let cipher = crypto.createCipheriv(
+    config.CRYPTO_ALGORITHM,
+    Buffer.from(config.CRYTPTO_KEY),
+    iv
+  );
+  let encrypted = cipher.update(text);
+
+  encrypted = Buffer.concat([encrypted, cipher.final()]);
+
+  return iv.toString("hex") + ":" + encrypted.toString("hex");
+}
 
 const API = {
   login: async (username, password) => {
+    const encryptedPassword = encrypt(password);
+
     const URL = `${config.BACKEND_URI}/auth/login`;
     const response = await fetch(URL, {
       method: "POST",
@@ -11,7 +28,7 @@ const API = {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ username, password }),
+      body: JSON.stringify({ username, password: encryptedPassword }),
     });
     return response.json();
   },

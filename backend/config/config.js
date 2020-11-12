@@ -6,4 +6,6 @@ module.exports = {
   jwtSecret: process.env.JWT_SECRET,
   jwtExpiresIn: process.env.JWT_EXPIRES_IN || "30d",
   jwtCookieExpires: process.env.JWT_COOKIE_EXPIRES || 30,
+  cryptoKey: process.env.CRYPTO_KEY || "",
+  cryptoAlgorithm: process.env.CRYPTO_ALGORITHM || "aes-128-cbc",
 };

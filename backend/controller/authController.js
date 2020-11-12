@@ -3,6 +3,23 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const { responseError, responseSuccess } = require("../utils/response");
 const config = require("../config/config");
+const crypto = require("crypto");
+
+function decrypt(text) {
+  let textParts = text.split(":");
+  let iv = Buffer.from(textParts.shift(), "hex");
+  let encryptedText = Buffer.from(textParts.join(":"), "hex");
+  let decipher = crypto.createDecipheriv(
+    config.cryptoAlgorithm,
+    Buffer.from(config.cryptoKey),
+    iv
+  );
+  let decrypted = decipher.update(encryptedText);
+
+  decrypted = Buffer.concat([decrypted, decipher.final()]);
+
+  return decrypted.toString();
+}
 
 const authController = {
   register: async (req, res, next) => {
@@ -52,7 +69,8 @@ const authController = {
       if (!loggingInUser) {
         return responseError(res, 400, "Username or password is incorrect");
       }
-      if (!(await bcrypt.compare(password, loggingInUser.password))) {
+      let decryptedPassword = decrypt(password);
+      if (!(await bcrypt.compare(decryptedPassword, loggingInUser.password))) {
         return responseError(res, 400, "Username or password is incorrect");
       }
       const token = jwt.sign(

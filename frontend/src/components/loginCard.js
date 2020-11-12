@@ -18,8 +18,6 @@ const useStyles = makeStyles({
 });
 
 function LoginCard() {
-  const history = useHistory();
-
   const classes = useStyles();
 
   const [username, setUsername] = useState("");
@@ -62,8 +60,11 @@ function LoginCard() {
       <Card className={classes.card} style={{ width: "100%" }}>
         <CardActions style={{ padding: 16, paddingTop: 50, paddingBottom: 50 }}>
           <Grid container item direction="column" justify="center">
-            <Avatar label="commentatorAvatar" style={{ margin: "auto" }}>
-              TT
+            <Avatar
+              label="commentatorAvatar"
+              style={{ margin: "auto", width: 64, height: 64 }}
+            >
+              TT-PY
             </Avatar>
             <TextField
               label="Username"

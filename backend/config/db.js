@@ -6,7 +6,7 @@ mongoose.connect(config.mongoDB, {
   useNewUrlParser: true,
 });
 mongoose.connection.on("error", (err) => {
-  logError(err);
+  console.log(err);
 });
 mongoose.connection.on("connected", () => {
   console.log("Database is connected");
